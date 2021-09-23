@@ -1,0 +1,30 @@
+{
+    "nodes":{
+        "biolink:Gene":{
+            "id_prefixes": [
+                "ENSEMBL",
+                "NCBIGene",
+                "HGNC",
+                "OMIM",
+                "UMLS"
+            ]
+        },
+        "biolink:Pathway":{
+            "id_prefixes": [
+                "REACT"
+            ]
+        }
+    },
+    "edges": [
+        {
+            "subject": "biolink:Gene",
+            "object": "biolink:Pathway",
+            "predicate": "biolink:participates_in"
+        },
+        {
+            "subject": "biolink:Pathway",
+            "object": "biolink:Gene",
+            "predicate": "biolink:has_participant"
+        }
+    ]
+}
