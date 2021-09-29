@@ -4,9 +4,7 @@
             "id_prefixes": [
                 "ENSEMBL",
                 "NCBIGene",
-                "HGNC",
-                "OMIM",
-                "UMLS"
+                "HGNC"
             ]
         },
         "biolink:Pathway":{

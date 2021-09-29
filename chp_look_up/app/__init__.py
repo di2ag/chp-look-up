@@ -1,26 +1,31 @@
 from chp_look_up.trapi_interface import TrapiInterface
 from chp_look_up.app.apps import *
+from trapi_model.meta_knowledge_graph import MetaKnowledgeGraph
+from chp_utils.curie_database import CurieDatabase
+from chp_utils.conflation import ConflationMap
 
-def get_app_config():
+
+def get_app_config(query):
     return ChpLookUpConfig
 
-def get_trapi_interface(chp_look_up_config=None):
-    if chp_look_up_config is None:
-        chp_look_up_config = ChpLookUpConfig
-    return TrapiInterface()
+def get_trapi_interface(chp_look_up_config = get_app_config(None)):
+    return TrapiInterface(trapi_version='1.2')
 
-def get_curies():
+def get_meta_knowledge_graph() -> MetaKnowledgeGraph:
+    interface = get_trapi_interface()
+    return interface.get_meta_knowledge_graph()
+
+def get_curies() -> CurieDatabase:
     interface = get_trapi_interface()
     return interface.get_curies()
 
-def get_meta_knowledge_graph():
+def get_conflation_map() -> ConflationMap:
     interface = get_trapi_interface()
-    return {"foo":"goo"}
-    #return interface.get_meta_knowledge_graph()
+    return interface.get_conflation_map()
     
 def get_response(consistent_queries):
     """ Should return app responses plus app_logs, status, and description information.
     """
     interface = get_trapi_interface()
-    identified_queries = interface.identify_queries(consistent_queries)
-    return {"foo":"goo"}
+    identified_queries_tuple = interface.identify_queries(consistent_queries)
+    database_results_with_query_tuple = interface.query_database(identified_queries_tuple)
