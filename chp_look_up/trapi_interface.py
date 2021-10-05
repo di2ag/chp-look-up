@@ -2,6 +2,8 @@ from trapi_model.logger import Logger as TrapiLogger
 from trapi_model.message import Message
 from trapi_model.query_graph import QueryGraph
 from trapi_model.biolink.constants import *
+from trapi_model.query_graph import QNode
+from trapi_model.query import Query
 from trapi_model.meta_knowledge_graph import MetaKnowledgeGraph
 from trapi_model.knowledge_graph import KnowledgeGraph
 
@@ -13,7 +15,6 @@ from enum import Enum
 from collections import defaultdict
 import os
 import django
-django.setup() 
 from chp_look_up.models import GeneToPathway, PathwayToGene
 
 class QueryType(Enum):
@@ -121,34 +122,36 @@ class TrapiInterface:
         self.logger = TrapiLogger()
 
     def query_database(self, identified_queries_tuple):
-        return_dict = {}
         for identified_query_tuple in identified_queries_tuple:
             query_identifier = identified_query_tuple[0]
-            identified_query = identified_query_tuple[1]
+            identified_query:Query = identified_query_tuple[1]
             database_results = None
             subject_node_curie = None
-            print(type(identified_query))
             if query_identifier == QueryType.GENE_TO_PATHWAY_WILDCARD:
-                gene_nodes_ids = identified_query.message.query_graph.find_nodes(categories=[BIOLINK_GENE_ENTITY])
-                subject_node_curie = gene_nodes_ids[0]
-                database_results = GeneToPathway.objects.get(gene__exact=subject_node_curie).get_result()
+                subject_node_ids = identified_query.message.query_graph.find_nodes(categories=[BIOLINK_GENE_ENTITY])
+                subject_node_id = subject_node_ids[0]
+                subject_node:QNode = identified_query.message.query_graph.nodes[subject_node_id]
+                subject_node_curie = subject_node.ids[0]
+                database_results = GeneToPathway.objects.filter(gene_curie=subject_node_curie)             
             elif query_identifier ==  QueryType.PATHWAY_TO_GENE_WILDCARD:
-                pathway_nodes_ids = identified_query.message.query_graph.find_nodes(categories=[BIOLINK_PATHWAY_ENTITY])
-                subject_node_curie = pathway_nodes_ids[0]
-                database_results = PathwayToGene.objects.get(pathway__exact=subject_node_curie)
+                subject_node_ids = identified_query.message.query_graph.find_nodes(categories=[BIOLINK_PATHWAY_ENTITY])
+                subject_node_id = subject_node_ids[0]
+                subject_node:QNode = identified_query.message.query_graph.nodes[subject_node_id]
+                subject_node_curie = subject_node.ids[0]
+                database_results = GeneToPathway.objects.filter(gene_curie=subject_node_curie) 
             trapi_response = self._build_results(subject_node_curie, database_results, query_identifier)
-            return_dict.update({identified_query:trapi_response})
-        return return_dict    
+        return trapi_response    
 
-    def _build_results(subject_curie, object_curies, query_type):
+    def _build_results(self, subject_curie, database_results, query_type):
         if query_type == GeneToPathway:
             knowledge_graph = KnowledgeGraph()
             knowledge_graph.add_node(curie=subject_curie, categories="biolink:Gene", name=subject_curie)
             
             pathway_count = 1
-            for pathway in object_curies:
+            for database_result in database_results:
+                pathway_curie, p_value = database_result.get_result()
                 pathway_count = pathway_count + 1
-                knowledge_graph.add_node(curie=pathway, categories="biolink:Pathway", name=pathway)
+                knowledge_graph.add_node(curie=pathway_curie, categories="biolink:Pathway", name=pathway_curie)
                 knowledge_graph.add_edge(k_subject='n0', k_object="n{}".format(pathway_count), predicate="biolink:participates_in")
             return knowledge_graph.to_dict()
 
@@ -156,30 +159,14 @@ class TrapiInterface:
             knowledge_graph = KnowledgeGraph()
             knowledge_graph.add_node(curie=subject_curie, categories="biolink:Pathway", name=subject_curie)
             
-            pathway_count = 1
-            for gene in object_curies:
-                pathway_count = pathway_count + 1
-                knowledge_graph.add_node(curie=gene, categories="biolink:Gene", name=gene)
-                knowledge_graph.add_edge(k_subject='n0', k_object="n{}".format(pathway_count), predicate="biolink:participates_in")
+            gene_count = 1
+            for database_result in database_results:
+                gene_curie, p_value = database_result.get_result()
+                gene_count = gene_count + 1
+                knowledge_graph.add_node(curie=gene_curie, categories="biolink:Gene", name=gene_curie)
+                knowledge_graph.add_edge(k_subject='n0', k_object="n{}".format(gene_count), predicate="biolink:participates_in")
         
             return knowledge_graph.to_dict()
-
-    # def contert_to_models(self, identified_queries) -> dict:
-
-    #     return_dict = {}
-
-    #     for query_type in identified_queries.keys():
-    #         typed_queries = identified_queries[query_type] 
-    #         model = None
-    #         if query_type == QueryType.PathwayToGene:
-    #             model = PathwayToGene()
-    #         elif query_type == QueryType.GeneToPathway:
-    #             model = GeneToPathway()
-
-    #         if model is not None:
-    #             return_dict.update({model:typed_queries})
-            
-    #     return return_dict
 
     def identify_queries(self, trapi_queries) -> dict:
         # Setup messages

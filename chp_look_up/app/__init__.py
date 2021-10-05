@@ -3,8 +3,6 @@ from chp_look_up.app.apps import *
 from trapi_model.meta_knowledge_graph import MetaKnowledgeGraph
 from chp_utils.curie_database import CurieDatabase
 from chp_utils.conflation import ConflationMap
-
-
 def get_app_config(query):
     return ChpLookUpConfig
 
@@ -28,4 +26,5 @@ def get_response(consistent_queries):
     """
     interface = get_trapi_interface()
     identified_queries_tuple = interface.identify_queries(consistent_queries)
-    database_results_with_query_tuple = interface.query_database(identified_queries_tuple)
+    trapi_response = interface.query_database(identified_queries_tuple)
+    return trapi_response
