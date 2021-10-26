@@ -1,8 +1,11 @@
+
 from chp_look_up.trapi_interface import TrapiInterface
 from chp_look_up.app.apps import *
+from trapi_model.knowledge_graph import KnowledgeGraph
 from trapi_model.meta_knowledge_graph import MetaKnowledgeGraph
 from chp_utils.curie_database import CurieDatabase
 from chp_utils.conflation import ConflationMap
+import json
 def get_app_config(query):
     return ChpLookUpConfig
 
@@ -21,10 +24,25 @@ def get_conflation_map() -> ConflationMap:
     interface = get_trapi_interface()
     return interface.get_conflation_map()
     
-def get_response(consistent_queries):
+def get_response(consistent_queries) -> tuple:
     """ Should return app responses plus app_logs, status, and description information.
     """
-    interface = get_trapi_interface()
-    identified_queries_tuple = interface.identify_queries(consistent_queries)
-    trapi_response = interface.query_database(identified_queries_tuple)
-    return trapi_response
+    responses = []
+    status:str = None
+    description:str = None
+    app_logs = []
+    for consistent_query in consistent_queries:
+        interface = get_trapi_interface()
+        identified_queries_tuple = interface.identify_queries(consistent_query)
+        try:
+            response = interface.query_database(identified_queries_tuple)
+        except Exception as ex:
+            responses = []
+            app_logs.extend(interface.logger.to_dict())
+            status = 'Unexpected error. See description.'
+            description = 'Error during lookup.{}'.format(ex)
+            return responses, app_logs, status, description
+        responses.append(response)
+        app_logs.extend(interface.logger.to_dict())
+    status = 'Success'
+    return responses, app_logs, status, description

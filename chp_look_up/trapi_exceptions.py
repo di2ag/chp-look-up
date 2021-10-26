@@ -5,7 +5,7 @@
 class NoSupportedQueriesFound(Exception):
 
     def __str__(self):
-        return 'No CHP core supported queries where found in passed query.'
+        return 'No CHP lookup supported queries where found in passed query.'
 
 class UnidentifiedQueryType(Exception):
 
@@ -28,7 +28,10 @@ class UnidentifiedDrugCurie(Exception):
     def __str__(self):
         return 'Unidentified chemical curie: {}.'.format(self.curie)
 
-class TooManyContributionNodes(Exception):
+class UnidentifiedPathwayCurie(Exception):
 
-    def __str__(self):
-        return 'Can only have 1 node for contributions.'
+    def __init__(self, *args: object) -> None:
+        self.curie = args[0]
+
+    def __str__(self) -> str:
+        return 'Unidentified pathway curie: {}.'.format(self.curie)
