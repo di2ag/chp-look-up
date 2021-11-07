@@ -1,11 +1,10 @@
-
 from chp_look_up.trapi_interface import TrapiInterface
 from chp_look_up.app.apps import *
 from trapi_model.knowledge_graph import KnowledgeGraph
 from trapi_model.meta_knowledge_graph import MetaKnowledgeGraph
 from chp_utils.curie_database import CurieDatabase
 from chp_utils.conflation import ConflationMap
-import json
+
 def get_app_config(query):
     return ChpLookUpConfig
 
@@ -46,3 +45,4 @@ def get_response(consistent_queries) -> tuple:
         app_logs.extend(interface.logger.to_dict())
     status = 'Success'
     return responses, app_logs, status, description
+    

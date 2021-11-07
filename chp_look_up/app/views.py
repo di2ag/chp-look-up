@@ -24,20 +24,18 @@ class meta_knowledge_graph(APIView):
 
     def get(self, request):
         if request.method == 'GET':
-            # # Initialize Query Processor
-            # query_processor = ChpCoreQueryProcessor(request, self.trapi_version)
+            # Initialize Query Processor
+            query_processor = ChpCoreQueryProcessor(request, self.trapi_version)
             
-            # # Get CHP App Config based on subdomain
-            # chp_config, _ = query_processor.get_app_config(request)
+            # Get CHP App Config based on subdomain
+            chp_config, _ = query_processor.get_app_config(request)
 
-            # # Get TRAPI Interface
-            # interface = query_processor.get_trapi_interface(chp_config)
+            # Get TRAPI Interface
+            interface = query_processor.get_trapi_interface(chp_config)
             
-            # # Get Meta KG
-            # meta_knowledge_graph = interface.get_meta_knowledge_graph()
-            # return JsonResponse(meta_knowledge_graph.to_dict())
-            print("foo")
-            return JsonResponse({"foo":"goo"})
+            # Get Meta KG
+            meta_knowledge_graph = interface.get_meta_knowledge_graph()
+            return JsonResponse(meta_knowledge_graph.to_dict())
 class curies(APIView):
     trapi_version = '1.2'
     def __init__(self, trapi_version='1.2', **kwargs):
@@ -46,17 +44,15 @@ class curies(APIView):
 
     def get(self, request):
         if request.method == 'GET':
-            # # Initialize Query Processor
-            # query_processor = ChpCoreQueryProcessor(request, self.trapi_version)
+            # Initialize Query Processor
+            query_processor = ChpCoreQueryProcessor(request, self.trapi_version)
             
-            # # Get CHP App Config based on subdomain
-            # chp_config, _ = query_processor.get_app_config(request)
+            # Get CHP App Config based on subdomain
+            chp_config, _ = query_processor.get_app_config(request)
 
-            # # Get TRAPI Interface
-            # interface = query_processor.get_trapi_interface(chp_config)
+            # Get TRAPI Interface
+            interface = query_processor.get_trapi_interface(chp_config)
             
-            # # Get Meta KG
-            # meta_knowledge_graph = interface.get_meta_knowledge_graph()
-            # return JsonResponse(meta_knowledge_graph.to_dict())
-            print("foo")
-            return JsonResponse({"foo":"goo"})
+            # Get Meta KG
+            meta_knowledge_graph = interface.get_meta_knowledge_graph()
+            return JsonResponse(meta_knowledge_graph.to_dict())

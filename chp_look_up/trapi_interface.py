@@ -16,6 +16,8 @@ from enum import Enum
 from collections import defaultdict
 import os
 from chp_look_up.models import GeneToPathway, PathwayToGene
+from chp_data.chp_look_up.DataHandler import DataHandler
+
 
 class QueryType(Enum):
     PATHWAY_TO_GENE_WILDCARD = 1
@@ -112,7 +114,6 @@ class TrapiInterface:
                  trapi_version='1.2',
                 ):
         self.trapi_version = trapi_version
-
         # Get base handler for processing curies and meta kg requests
         self._get_curies()
         self.meta_knowledge_graph = self._get_meta_knowledge_graph()
@@ -120,7 +121,7 @@ class TrapiInterface:
 
         # Initialize interface level logger
         self.logger = TrapiLogger()
-
+    
     def query_database(self, identified_query_tuple) -> Query:
         query_identifier:QueryIdentifier = identified_query_tuple[0]
         identified_query:Query = identified_query_tuple[1]
@@ -133,6 +134,7 @@ class TrapiInterface:
             subject_node_curie = subject_node.ids[0]
             database_results:QuerySet = GeneToPathway.objects.all().filter(gene_curie=subject_node_curie)            
         elif query_identifier ==  QueryType.PATHWAY_TO_GENE_WILDCARD:
+            print('pathway query identified')
             subject_node_ids:list = identified_query.message.query_graph.find_nodes(categories=[BIOLINK_PATHWAY_ENTITY])
             subject_node_id = subject_node_ids[0]
             subject_node:QNode = identified_query.message.query_graph.nodes[subject_node_id]
@@ -249,19 +251,17 @@ class TrapiInterface:
         """
         Returns the meta knowledge graph for this app
         """
-        dir = os.path.dirname(os.path.realpath(__file__))
         return MetaKnowledgeGraph.load(
             self.trapi_version,
             None,
-            filename=dir+"/metakg.json"
+            filename=DataHandler.getMetaKnowledgeGraph()
         )
 
     def get_meta_knowledge_graph(self) -> MetaKnowledgeGraph:
         return self.meta_knowledge_graph
 
     def _get_curies(self) -> CurieDatabase:
-        dir = os.path.dirname(os.path.realpath(__file__))
-        self.curies_db = CurieDatabase(curies_filename=dir+"/all_curies_map.json")
+        self.curies_db = CurieDatabase(curies_filename=DataHandler.getAllCuriesMap())
 
     def get_curies(self) -> CurieDatabase:
         self._get_curies()
@@ -269,7 +269,7 @@ class TrapiInterface:
     
     def _get_conflation_map(self) -> ConflationMap:
         dir = os.path.dirname(os.path.realpath(__file__))
-        return ConflationMap(conflation_map_filename=dir+"/conflation_map.json")
+        return ConflationMap(conflation_map_filename=DataHandler.getConflationMap())
 
     def get_conflation_map(self) -> ConflationMap:
         return self.conflation_map
