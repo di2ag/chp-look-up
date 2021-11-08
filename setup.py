@@ -6,15 +6,14 @@ import io
 from setuptools import find_packages
 from setuptools import setup
 
-__version__ = re.search(r'__version__\s*=\s*[\'"]([0-9]*\.[0-9]*\.[0-9]*)[\'"]',
-                        io.open('chp_look_up/_version.py', encoding='utf_8_sig').read()).group(1)
+__version__ = '1.0'
 
 REQUIRED_PACKAGES = [
 ]
 
 setup(
     name='chp_look_up',
-    version='1.0',
+    version=__version__,
     author='Luke Veenhuis',
     author_email='luke.j.veenhuis@dartmouth.edu',
     description='Simple one hop database lookup service for NCATS Connections Hypothesis Provider',
