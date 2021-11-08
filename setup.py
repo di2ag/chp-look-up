@@ -14,7 +14,7 @@ REQUIRED_PACKAGES = [
 
 setup(
     name='chp_look_up',
-    version=__version__,
+    version='1.0',
     author='Luke Veenhuis',
     author_email='luke.j.veenhuis@dartmouth.edu',
     description='Simple one hop database lookup service for NCATS Connections Hypothesis Provider',
