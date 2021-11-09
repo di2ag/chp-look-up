@@ -16,7 +16,7 @@ from enum import Enum
 from collections import defaultdict
 import os
 from chp_look_up.models import GeneToPathway, PathwayToGene
-from chp_data.chp_look_up.DataHandler import DataHandler
+from chp_data import LookUpDataHandler as DataHandler
 
 
 class QueryType(Enum):
