@@ -16,8 +16,7 @@ from enum import Enum
 from collections import defaultdict
 import os
 from chp_look_up.models import GeneToPathway, PathwayToGene
-from chp_data.chp_look_up import DataHandler
-from logging import Logger
+from chp_data.chp_look_up.DataHandler import DataHandler
 
 
 class QueryType(Enum):
@@ -262,8 +261,6 @@ class TrapiInterface:
         return self.meta_knowledge_graph
 
     def _get_curies(self) -> CurieDatabase:
-        print(DataHandler.getAllCuriesMap())
-        Logger.log(DataHandler.getAllCuriesMap())
         self.curies_db = CurieDatabase(curies_filename=DataHandler.getAllCuriesMap())
 
     def get_curies(self) -> CurieDatabase:
