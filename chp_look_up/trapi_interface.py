@@ -1,3 +1,8 @@
+from django.db.models import QuerySet
+from enum import Enum
+from collections import defaultdict
+import os
+
 from trapi_model.logger import Logger as TrapiLogger
 from trapi_model.message import Message
 from trapi_model.query_graph import QEdge, QueryGraph
@@ -10,14 +15,10 @@ from trapi_model.results import Result, Results, Binding
 from trapi_model.message import Message
 from chp_utils.curie_database import CurieDatabase
 from chp_utils.conflation import ConflationMap
-from django.db.models import QuerySet
-from chp_look_up.trapi_exceptions import *
-from enum import Enum
-from collections import defaultdict
-import os
-from chp_look_up.models import GeneToPathway, PathwayToGene
 from chp_data.LookUpDataHandler import DataHandler
 
+from .trapi_exceptions import *
+from .models import GeneToPathway, PathwayToGene
 
 class QueryType(Enum):
     PATHWAY_TO_GENE_WILDCARD = 1
