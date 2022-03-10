@@ -4,9 +4,9 @@ from django.http.response import JsonResponse
 from trapi_model import knowledge_graph
 from trapi_model.query import Query
 from trapi_model.biolink.constants import *
-from .models import *
 from trapi_model.knowledge_graph import KnowledgeGraph, KNode, KEdge
 
+from .models import *
 
 class QueryProcessor:
     def __init__(self, query) -> None:

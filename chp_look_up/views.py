@@ -36,6 +36,7 @@ class meta_knowledge_graph(APIView):
             # Get Meta KG
             meta_knowledge_graph = interface.get_meta_knowledge_graph()
             return JsonResponse(meta_knowledge_graph.to_dict())
+
 class curies(APIView):
     trapi_version = '1.2'
     def __init__(self, trapi_version='1.2', **kwargs):

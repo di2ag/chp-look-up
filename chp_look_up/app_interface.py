@@ -1,5 +1,5 @@
-from chp_look_up.trapi_interface import TrapiInterface
-from chp_look_up.app.apps import *
+from .trapi_interface import TrapiInterface
+from .apps import *
 from trapi_model.knowledge_graph import KnowledgeGraph
 from trapi_model.meta_knowledge_graph import MetaKnowledgeGraph
 from chp_utils.curie_database import CurieDatabase
