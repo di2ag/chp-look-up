@@ -267,6 +267,9 @@ class TrapiInterface:
     def get_curies(self) -> CurieDatabase:
         self._get_curies()
         return self.curies_db
+
+    def get_name(self) -> str:
+        return 'chp_look_up'
     
     def _get_conflation_map(self) -> ConflationMap:
         dir = os.path.dirname(os.path.realpath(__file__))
