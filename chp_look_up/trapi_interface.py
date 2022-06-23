@@ -2,6 +2,8 @@ from django.db.models import QuerySet
 from enum import Enum
 from collections import defaultdict
 import os
+import json
+import pkg_resources
 
 from trapi_model.logger import Logger as TrapiLogger
 from trapi_model.message import Message
@@ -15,10 +17,19 @@ from trapi_model.results import Result, Results, Binding
 from trapi_model.message import Message
 from chp_utils.curie_database import CurieDatabase
 from chp_utils.conflation import ConflationMap
-from chp_data.LookUpDataHandler import DataHandler
 
 from .trapi_exceptions import *
 from .models import GeneToPathway, PathwayToGene
+
+def read_json_datafile(relpath):
+    abspath = os.path.join(MODULE_PATH, relpath)
+    # If the path exists just load it
+    if os.path.exists(abspath):
+        with open(abspath, 'r') as datafile:
+            return json.load(datafile)
+    # Else try to load from package resources
+    json_string = pkg_resources.resource_stream(__name__, relpath).read().decode()
+    return json.loads(json_string)
 
 class QueryType(Enum):
     PATHWAY_TO_GENE_WILDCARD = 1
@@ -252,17 +263,18 @@ class TrapiInterface:
         """
         Returns the meta knowledge graph for this app
         """
+        metakg_dict = read_json_datafile('app_meta_data/meta_knowledge_graph.json')
         return MetaKnowledgeGraph.load(
             self.trapi_version,
             None,
-            filename=DataHandler.getMetaKnowledgeGraph()
-        )
+            meta_knowledge_graph=metakg_dict,
 
     def get_meta_knowledge_graph(self) -> MetaKnowledgeGraph:
         return self.meta_knowledge_graph
 
     def _get_curies(self) -> CurieDatabase:
-        self.curies_db = CurieDatabase(curies_filename=DataHandler.getAllCuriesMap())
+        curies_dict = read_json_datafile('app_meta_data/curies_database.json')
+        self.curies_db = CurieDatabase(curies=curies_dict)
 
     def get_curies(self) -> CurieDatabase:
         self._get_curies()
@@ -272,8 +284,8 @@ class TrapiInterface:
         return 'chp_look_up'
     
     def _get_conflation_map(self) -> ConflationMap:
-        dir = os.path.dirname(os.path.realpath(__file__))
-        return ConflationMap(conflation_map_filename=DataHandler.getConflationMap())
+        # There is currently no conflation map for this app
+        return ConflationMap(conflation_map={})
 
     def get_conflation_map(self) -> ConflationMap:
         return self.conflation_map
