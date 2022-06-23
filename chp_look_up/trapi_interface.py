@@ -267,7 +267,7 @@ class TrapiInterface:
         return MetaKnowledgeGraph.load(
             self.trapi_version,
             None,
-            meta_knowledge_graph=metakg_dict,
+            meta_knowledge_graph=metakg_dict)
 
     def get_meta_knowledge_graph(self) -> MetaKnowledgeGraph:
         return self.meta_knowledge_graph
