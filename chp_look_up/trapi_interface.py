@@ -21,6 +21,8 @@ from chp_utils.conflation import ConflationMap
 from .trapi_exceptions import *
 from .models import GeneToPathway, PathwayToGene
 
+MODULE_PATH = os.path.dirname(os.path.abspath(__file__))
+
 def read_json_datafile(relpath):
     abspath = os.path.join(MODULE_PATH, relpath)
     # If the path exists just load it
