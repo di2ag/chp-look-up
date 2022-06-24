@@ -275,7 +275,7 @@ class TrapiInterface:
         return self.meta_knowledge_graph
 
     def _get_curies(self) -> CurieDatabase:
-        curies_dict = read_json_datafile('app_meta_data/curies_database.json')
+        curies_dict = read_json_datafile('app_meta_data/curies.json')
         self.curies_db = CurieDatabase(curies=curies_dict)
 
     def get_curies(self) -> CurieDatabase:
