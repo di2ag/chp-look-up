@@ -55,8 +55,12 @@ class TestChpLearn(unittest.TestCase):
         resp = self._get(url)
 
     def test_gene_to_pathway_wildcard(self):
-        query = Query.load('1.2', None, query_filepath=os.path.join(MODULE_DIR, 'gene_to_pathway_wildcard.json'))
-        q_dict = self._strip_query(query)
-        url = LOCAL_URL + self.query_endpoint
-        resp, status = self._post(url, q_dict)
-        self._print_query(resp)
+        with open(os.path.join(MODULE_DIR, 'gene_to_pathway_wildcard.json'), 'rb') as f_:
+            queries = json.load(f_)
+        for query in queries:
+            url = LOCAL_URL + self.query_endpoint
+            resp, status = self._post(url, query)
+            self._print_query(resp)
+
+if __name__ == '__main__':
+    unittest.main()
