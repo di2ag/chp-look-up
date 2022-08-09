@@ -27,21 +27,21 @@ def get_response(consistent_queries) -> tuple:
     """ Should return app responses plus app_logs, status, and description information.
     """
     responses = []
-    status: str = None  # type: ignore #noqa
-    description: str = None  # type: ignore #noqa
+    status:str = None
+    description:str = None
     app_logs = []
-    if isinstance(consistent_queries, list):
-        for consistent_query in consistent_queries:  # type: ignore #noqa
-            interface = get_trapi_interface()
-            identified_queries_tuple = interface.identify_queries(consistent_query)
-            response = interface.query_database(identified_queries_tuple)
-            responses.append(response)  # type: ignore
-            app_logs.extend(interface.logger.to_dict())  # type: ignore
-    else:
+    for consistent_query in consistent_queries:
         interface = get_trapi_interface()
-        identified_queries_tuple = interface.identify_queries(consistent_queries)
-        response = interface.query_database(identified_queries_tuple)
-        responses.append(response)  # type: ignore
-        app_logs.extend(interface.logger.to_dict())  # type: ignore
+        identified_queries_tuple = interface.identify_queries(consistent_query)
+        try:
+            response = interface.query_database(identified_queries_tuple)
+        except Exception as ex:
+            responses = []
+            app_logs.extend(interface.logger.to_dict())
+            status = 'Unexpected error. See description.'
+            description = 'Error during lookup.{}'.format(ex)
+            return responses, app_logs, status, description
+        responses.append(response)
+        app_logs.extend(interface.logger.to_dict())
     status = 'Success'
-    return responses, app_logs, status, description  # type: ignore
+    return responses, app_logs, status, description
