@@ -115,12 +115,9 @@ class QueryIdentifier:
         return True
     @staticmethod
     def getQueryType(query_graph:QueryGraph) -> QueryType:
-        print(query_graph)
         if QueryIdentifier._isPathwayToGeneWildcardQuery(query_graph):
-            print('hi')
             query_type:QueryType = QueryType.PATHWAY_TO_GENE_WILDCARD
         elif QueryIdentifier._isGeneToPathwayWildcardQuery(query_graph):
-            print('yo')
             query_type:QueryType = QueryType.GENE_TO_PATHWAY_WILDCARD
         else:
             raise UnidentifiedQueryType
@@ -151,7 +148,6 @@ class TrapiInterface:
             subject_node_curie = subject_node.ids[0]
             database_results:QuerySet = GeneToPathway.objects.all().filter(gene_curie=subject_node_curie)            
         elif query_identifier ==  QueryType.PATHWAY_TO_GENE_WILDCARD:
-            print('pathway query identified')
             subject_node_ids:list = identified_query.message.query_graph.find_nodes(categories=[BIOLINK_PATHWAY_ENTITY])
             subject_node_id = subject_node_ids[0]
             subject_node:QNode = identified_query.message.query_graph.nodes[subject_node_id]
