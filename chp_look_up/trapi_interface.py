@@ -115,9 +115,12 @@ class QueryIdentifier:
         return True
     @staticmethod
     def getQueryType(query_graph:QueryGraph) -> QueryType:
+        print(query_graph)
         if QueryIdentifier._isPathwayToGeneWildcardQuery(query_graph):
+            print('hi')
             query_type:QueryType = QueryType.PATHWAY_TO_GENE_WILDCARD
         elif QueryIdentifier._isGeneToPathwayWildcardQuery(query_graph):
+            print('yo')
             query_type:QueryType = QueryType.GENE_TO_PATHWAY_WILDCARD
         else:
             raise UnidentifiedQueryType
