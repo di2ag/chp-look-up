@@ -30,9 +30,7 @@ class TestChpLearn(unittest.TestCase):
     def _post(url, params):
         res = requests.post(url, json=params)
         if res.status_code != 200:
-            print(res.status_code)
-            print(res.content)
-            return res.content
+            return res, res.status_code
         else:
             ret = res.json()
             return ret, res.status_code
@@ -55,7 +53,7 @@ class TestChpLearn(unittest.TestCase):
         resp = self._get(url)
 
     def test_gene_to_pathway_wildcard(self):
-        with open(os.path.join(MODULE_DIR, 'gene_to_pathway_wildcard.json'), 'rb') as f_:
+        with open(os.path.join(MODULE_DIR, 'test_queries.json'), 'rb') as f_:
             queries = json.load(f_)
         for query in queries:
             url = LOCAL_URL + self.query_endpoint

@@ -30,18 +30,18 @@ def get_response(consistent_queries) -> tuple:
     status:str = None
     description:str = None
     app_logs = []
+    if not isinstance(consistent_queries, list):
+        consistent_queries = [consistent_queries]
+
     for consistent_query in consistent_queries:
         interface = get_trapi_interface()
         identified_queries_tuple = interface.identify_queries(consistent_query)
         try:
             response = interface.query_database(identified_queries_tuple)
         except Exception as ex:
-            responses = []
-            app_logs.extend(interface.logger.to_dict())
-            status = 'Unexpected error. See description.'
-            description = 'Error during lookup.{}'.format(ex)
-            return responses, app_logs, status, description
+            response = consistent_query.get_copy()
         responses.append(response)
         app_logs.extend(interface.logger.to_dict())
     status = 'Success'
+
     return responses, app_logs, status, description

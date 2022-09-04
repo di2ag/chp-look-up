@@ -43,7 +43,6 @@ class GeneToPathwayWildcardQueryProcessor(QueryProcessor):
         self.gene_curie = (gene_node.ids[0])
 
         self.pathways = GeneToPathway.objects.get(gene__exact=self.gene_curie).get_result()
-        print(self.pathways)
         self.build_response()
     
     def build_response(self) -> None:
@@ -54,7 +53,6 @@ class GeneToPathwayWildcardQueryProcessor(QueryProcessor):
 
         for pathway in self.pathways:
             gene_count = gene_count + 1
-            print(pathway)
             knowledge_graph.add_node(curie=pathway, categories="biolink:Pathway", name=pathway)
             knowledge_graph.add_edge(k_subject='n0', k_object="n{}".format(gene_count), predicate="biolink:participates_in")
         
