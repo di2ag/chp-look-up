@@ -247,8 +247,8 @@ class TrapiInterface:
             identified_query_tuple = None
             self.logger.debug(f'Lookup Service could not processes derived query. {str(ex)}. Derived Query graph: {query.message.query_graph.to_dict()}')
         #check if any queryies where setup/processed
-        if identified_query_tuple is None:
-            raise NoSupportedQueriesFound
+        #if identified_query_tuple is None:
+        #    raise NoSupportedQueriesFound
         return identified_query_tuple
 
     def _determine_message_type(self, message: Message):
